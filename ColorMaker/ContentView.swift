@@ -6,96 +6,135 @@
 //
 
 import SwiftUI
+import WebKit
+
 
 struct ContentView: View {
   
-  @State private var redSliderValue = 0.0
-  @State private var blueSliderValue = 0.0
-  @State private var greenSliderValue = 0.0
-  @State private var alertIsVisible = false
-  @State private var colorName = "Color Name"
+  @State var redSliderValue = 0.0
+  @State var blueSliderValue = 0.0
+  @State var greenSliderValue = 0.0
+  @State var alertIsVisible = false
+  @State var isSet = false
+  @State var name: String = ""
+  
   
   var body: some View {
-    VStack {
+    
+    ScrollView {
       VStack {
-      
-        Text(colorName)
-          .font(.largeTitle)
-          .bold()
-          .padding()
-          .frame(maxWidth: .infinity, maxHeight: 100)
-          .background(
-            Color(red: redSliderValue/255, green: greenSliderValue/255, blue: blueSliderValue/255)
-          )
-          .foregroundColor(.white)
+        VStack {
+          
+          // ColorName
+          topTextView(redSliderValue: $redSliderValue, blueSliderValue: $blueSliderValue, greenSliderValue: $greenSliderValue, isSet: $isSet, name: $name)
+          
+          
+          // Sliders
+          SliderView(sliderValue: $redSliderValue,colorName: "Red")
+          SliderView(sliderValue: $blueSliderValue, colorName: "Blue")
+          SliderView(sliderValue: $greenSliderValue, colorName: "Green")
+          
+          // Set Button
+          HStack {
+            Spacer()
+            setButton(alertIsVisible: $alertIsVisible, redSliderValue: $redSliderValue, blueSliderValue: $blueSliderValue, greenSliderValue: $greenSliderValue, isSet: $isSet, name: $name)
+            
+            // Reset Button
+            Button("Reset Color".uppercased()) {
+              withAnimation {
+                isSet = false
+                redSliderValue = 0.0
+                blueSliderValue = 0.0
+                greenSliderValue = 0.0
+                name = ""
+              }
+              
+              
+            }
+            .padding(20.0)
+            .background(
+              ZStack {
+                
+                Color(red: redSliderValue/255, green: greenSliderValue/255, blue: blueSliderValue/255)
+                LinearGradient(
+                  gradient: Gradient(colors: [Color.white.opacity(0.3), Color.clear]),
+                  startPoint: .top, endPoint: .bottom)
+              }
+            )
+            .overlay(
+              RoundedRectangle(cornerRadius: 21)
+                .strokeBorder(Color.white, lineWidth: 2)
+            )
+            .foregroundColor(.white)
+            .cornerRadius(21)
+            .bold()
+            .font(.title3)
+            Spacer()
+          }
+        }
         
+        Spacer()
       }
-      
-      SliderView(sliderValue: $redSliderValue, color: "Red", text: String(Int(redSliderValue.rounded())))
-      SliderView(sliderValue: $blueSliderValue, color: "Blue", text: String(Int(blueSliderValue.rounded())))
-      SliderView(sliderValue: $greenSliderValue, color: "Green",text:String(Int(greenSliderValue.rounded())))
-      
-      SetButton(alertIsVisible: $alertIsVisible, redSliderValue: $redSliderValue, blueSliderValue: $blueSliderValue, greenSliderValue: $greenSliderValue, colorName: $colorName)
-      
-      Spacer()
+      .accentColor(Color(red: redSliderValue/255, green: greenSliderValue/255, blue: blueSliderValue/255))
     }
-    .accentColor(Color(red: redSliderValue/255, green: greenSliderValue/255, blue: blueSliderValue/255))
   }
   
 }
 
 
 
-struct ContentView_Previews: PreviewProvider {
-  static var previews: some View {
-    ContentView()
-  }
-}
+
 
 struct SliderView: View {
   @Binding var sliderValue: Double
-  var color: String
-  var text: String
+  var colorName: String
   
   var body: some View {
     VStack(alignment: .leading) {
-      Text(color)
+      Text(colorName)
         .font(.title)
+      
       HStack {
         Slider(value: $sliderValue, in: 0.0...255.0)
-        Text(text)
+        Text(String(Int(sliderValue.rounded())))
           .bold()
-          .frame(width: 40)
+          .font(.title2)
+          .frame(width: 60)
       }
     }
     .padding()
   }
 }
 
-
-struct SetButton: View {
+struct setButton: View {
   @Binding var alertIsVisible: Bool
   @Binding var redSliderValue: Double
   @Binding var blueSliderValue: Double
   @Binding var greenSliderValue: Double
-  @Binding var colorName: String
-  //  var myColor: Color
-  
-  func submit() {
-    
-    
-    print("You entered \(colorName)")
-  }
+  @Binding var isSet: Bool
+  @Binding var name: String
   
   var body: some View {
     Button("Set Color".uppercased()) {
-      alertIsVisible.toggle()
+      withAnimation {
+        
+        alertIsVisible = true
+        
+      }
     }
     .alert("Enter a Color Name", isPresented: $alertIsVisible) {
-      TextField("New Color", text: $colorName)
+      TextField("Enter a Color Name", text: $name)
         .foregroundColor(.black)
-      Button("OK", action: submit)
+      Button("OK") {
+        if !name.isEmpty {
+          isSet = true
+        }
+        else {
+          isSet = false
+        }
+      }
     }
+    
     .padding(20.0)
     .background(
       ZStack {
@@ -104,7 +143,6 @@ struct SetButton: View {
         LinearGradient(
           gradient: Gradient(colors: [Color.white.opacity(0.3), Color.clear]),
           startPoint: .top, endPoint: .bottom)
-        
       }
     )
     .overlay(
@@ -115,6 +153,65 @@ struct SetButton: View {
     .cornerRadius(21)
     .bold()
     .font(.title3)
+  }
+}
+
+struct topTextView: View {
+  
+  @Environment(\.openURL) var openURL
+  @State private var isShowingWebView: Bool = false
+  @Binding var redSliderValue: Double
+  @Binding var blueSliderValue: Double
+  @Binding var greenSliderValue: Double
+  @Binding var isSet: Bool
+  @Binding var name: String
+  
+  var body: some View {
+    
+    HStack{
+      Spacer()
+      Text(isSet ? name : "Color Name")
+        .font(.system(size: 50, design: .rounded))
+        .bold()
+        .padding()
+        .frame(maxWidth: .infinity, minHeight: 200)
+        .edgesIgnoringSafeArea(.top)
+      
+      Button {
+        withAnimation {
+          isShowingWebView = true
+          
+        }
+      } label: {
+        Image(systemName: "info.circle")
+          .foregroundColor(.white)
+          .font(.title)
+      }
+      .sheet(isPresented: $isShowingWebView) {
+        //        Link("Visit Apple", destination: URL(string: "https://www.apple.com")!)
+        
+        WebView(url: URL(string:"https://en.wikipedia.org/wiki/RGB_color_model")!)
+        
+        
+      }
+      
+      Spacer()
+    }
+    .background(
+      
+      Color(red: redSliderValue/255, green: greenSliderValue/255, blue: blueSliderValue/255)
+      
+    )
+    .foregroundColor(.white)
+    
+  }
+  
+  
+  struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+      ContentView()
+      
+    }
   }
   
 }
