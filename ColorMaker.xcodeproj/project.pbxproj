@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA8358082A33998900F51698 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8358072A33998900F51698 /* Game.swift */; };
 		AADAAAF72A253B6A0022AEBF /* ColorMakerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADAAAF62A253B6A0022AEBF /* ColorMakerApp.swift */; };
 		AADAAAF92A253B6A0022AEBF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADAAAF82A253B6A0022AEBF /* ContentView.swift */; };
 		AADAAAFB2A253B6C0022AEBF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AADAAAFA2A253B6C0022AEBF /* Assets.xcassets */; };
@@ -14,6 +15,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AA8358072A33998900F51698 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		AADAAAF32A253B6A0022AEBF /* ColorMaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ColorMaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AADAAAF62A253B6A0022AEBF /* ColorMakerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorMakerApp.swift; sourceTree = "<group>"; };
 		AADAAAF82A253B6A0022AEBF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -32,9 +34,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AA8358092A33998F00F51698 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				AA8358072A33998900F51698 /* Game.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		AADAAAEA2A253B6A0022AEBF = {
 			isa = PBXGroup;
 			children = (
+				AA8358092A33998F00F51698 /* Model */,
 				AADAAAF52A253B6A0022AEBF /* ColorMaker */,
 				AADAAAF42A253B6A0022AEBF /* Products */,
 			);
@@ -139,6 +150,7 @@
 			files = (
 				AADAAAF92A253B6A0022AEBF /* ContentView.swift in Sources */,
 				AADAAAF72A253B6A0022AEBF /* ColorMakerApp.swift in Sources */,
+				AA8358082A33998900F51698 /* Game.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
